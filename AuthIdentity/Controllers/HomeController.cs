@@ -33,7 +33,7 @@ namespace AuthIdentity.Controllers
         [Authorize]
         public IActionResult Secret()
         {
-            return View();
+            return View("Index");
         }
 
         public IActionResult Login()
