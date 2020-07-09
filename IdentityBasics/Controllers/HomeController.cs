@@ -25,6 +25,18 @@ namespace IdentityBasics.Controllers
             return View();
         }
 
+        [Authorize(Policy = "Claim.DoB")]
+        public IActionResult SecretPolicy()
+        {
+            return View("Secret");
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult SecretRole()
+        {
+            return View("Secret");
+        }
+
         public IActionResult Authenticate()
         {
 
@@ -38,6 +50,8 @@ namespace IdentityBasics.Controllers
             var authClaims = new List<Claim>()
             {
                 new Claim(ClaimTypes.Name, "Zubi VO"),
+                new Claim(ClaimTypes.DateOfBirth, "28/06/2000"),
+                new Claim(ClaimTypes.Role, "Admin"),
                 new Claim("Email Claim", "ZubairVO.com"),
 
             };
