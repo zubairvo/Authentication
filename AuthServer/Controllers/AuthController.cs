@@ -25,7 +25,7 @@ namespace AuthServer.Controllers
 
             var query = new QueryBuilder();
 
-            query.Add("redirectUri", redirect_uri);
+            query.Add("redirect_uri", redirect_uri);
             query.Add("state", state);
 
             return View(model: query.ToString());

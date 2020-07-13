@@ -36,30 +36,30 @@ namespace AuthClient
                 {
                     config.ClientId = "client_id";
                     config.ClientSecret = "client_secret";
-                    config.CallbackPath = "/oauth/callback";
-                    config.AuthorizationEndpoint = "https://localhost:44310/OAuth/authorize";
-                    config.TokenEndpoint = "https://localhost:44310/OAuth/token";
+                    config.CallbackPath = "/auth/callback";
+                    config.AuthorizationEndpoint = "https://localhost:44310/Auth/authorize";
+                    config.TokenEndpoint = "https://localhost:44310/Auth/token";
 
                     config.SaveTokens = true;
 
-                    config.Events = new OAuthEvents()
-                    {
-                        OnCreatingTicket = context =>
-                        {
-                            var accessToken = context.AccessToken;
-                            var payload = accessToken.Split('.')[1];
-                            var bytes = Convert.FromBase64String(payload);
-                            var jsonPayLoad = Encoding.UTF8.GetString(bytes);
-                            var claims = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonPayLoad);
+                    //config.Events = new OAuthEvents()
+                    //{
+                    //    OnCreatingTicket = context =>
+                    //    {
+                    //        var accessToken = context.AccessToken;
+                    //        var base64payload = accessToken.Split('.')[1];
+                    //        var bytes = Convert.FromBase64String(base64payload);
+                    //        var jsonPayLoad = Encoding.UTF8.GetString(bytes);
+                    //        var claims = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonPayLoad);
 
-                            foreach (var claim in claims)
-                            {
-                                context.Identity.AddClaim(new Claim(claim.Key, claim.Value));
-                            }
+                    //        foreach (var claim in claims)
+                    //        {
+                    //            context.Identity.AddClaim(new Claim(claim.Key, claim.Value));
+                    //        }
 
-                            return Task.CompletedTask;
-                        }
-                    };
+                    //        return Task.CompletedTask;
+                    //    }
+                    //};
                 });
 
             services.AddControllersWithViews()
