@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,8 +24,20 @@ namespace AuthServer
                 {
 
                     var secretBytes = Encoding.UTF8.GetBytes(Constants.Secret);
-
                     var key = new SymmetricSecurityKey(secretBytes);
+
+                    config.Events = new JwtBearerEvents()
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            if (context.Request.Query.ContainsKey("access_token"))
+                            {
+                                context.Token = context.Request.Query["access_token"];
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
 
                     config.TokenValidationParameters = new TokenValidationParameters()
                     {
@@ -35,7 +48,8 @@ namespace AuthServer
 
                 });
 
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                    .AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
