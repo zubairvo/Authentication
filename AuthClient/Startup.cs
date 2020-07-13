@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
@@ -42,25 +43,28 @@ namespace AuthClient
 
                     config.SaveTokens = true;
 
-                    //config.Events = new OAuthEvents()
-                    //{
-                    //    OnCreatingTicket = context =>
-                    //    {
-                    //        var accessToken = context.AccessToken;
-                    //        var base64payload = accessToken.Split('.')[1];
-                    //        var bytes = Convert.FromBase64String(base64payload);
-                    //        var jsonPayLoad = Encoding.UTF8.GetString(bytes);
-                    //        var claims = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonPayLoad);
+                    config.Events = new OAuthEvents()
+                    {
+                        OnCreatingTicket = context =>
+                        {
+                            var accessToken = context.AccessToken;
+                            var base64payload = accessToken.Split('.')[1];
+                            base64payload = base64payload.PadRight(base64payload.Length + (base64payload.Length * 3) % 4, '=');
+                            var bytes = Convert.FromBase64String(base64payload);
+                            var jsonPayLoad = Encoding.UTF8.GetString(bytes);
+                            var claims = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonPayLoad);
 
-                    //        foreach (var claim in claims)
-                    //        {
-                    //            context.Identity.AddClaim(new Claim(claim.Key, claim.Value));
-                    //        }
+                            foreach (var claim in claims)
+                            {
+                                context.Identity.AddClaim(new Claim(claim.Key, claim.Value));
+                            }
 
-                    //        return Task.CompletedTask;
-                    //    }
-                    //};
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
+
+            services.AddHttpClient();
 
             services.AddControllersWithViews()
                     .AddRazorRuntimeCompilation();

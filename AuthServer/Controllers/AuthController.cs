@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -92,6 +93,17 @@ namespace AuthServer.Controllers
             await Response.Body.WriteAsync(response_bytes, 0, response_bytes.Length);
 
             return Redirect(redirect_uri);
+        }
+
+        [Authorize]
+        public IActionResult Validate()
+        {
+
+            if (HttpContext.Request.Query.TryGetValue("access_token", out var accessToken))
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
     }
 }
