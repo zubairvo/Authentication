@@ -27,7 +27,7 @@ namespace ApiAuth.AuthRequirements
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context,
             JwtRequirements requirement)
         {
-            if(_httpcontext.Request.Query.TryGetValue("Authorization", out var authHeader))
+            if(_httpcontext.Request.Headers.TryGetValue("Authorization", out var authHeader))
             {
 
                 var accessToken = authHeader.ToString().Split(' ')[1];
