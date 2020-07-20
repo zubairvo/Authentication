@@ -20,7 +20,7 @@ namespace webApi.Controllers
         }
 
         //[Authorize]
-        [Route("/")]
+        [Route("/home")]
         public async Task<IActionResult> Index()
         {
             var serverClient = _httpClientFactory.CreateClient();

@@ -1,4 +1,5 @@
 ﻿using IdentityServer4.Models;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace IdentityServer
         {
             return new[]
             {
+             
             new IdentityResources.OpenId(),
             new IdentityResources.Profile(),
             new IdentityResources.Email(),
@@ -36,7 +38,28 @@ namespace IdentityServer
                     Scopes = new List<string> {"webApi"},
                     ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
                     UserClaims = new List<string> {"role"}
-                }
+                },
+
+            new ApiResource
+                {
+                    Name = "ClientApi",
+                    DisplayName = "API #2",
+                    Description = "Allow the application to access API #1&2 on your behalf",
+                    Scopes = new List<string> {"webApi", "ClientApi"},
+                    ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
+                    UserClaims = new List<string> {"role"}
+                },
+
+            //new ApiResource
+            //    {
+            //        Name = "Client_MVC",
+            //        DisplayName = "API MVC",
+            //        Description = "Allow the application to access API MVC on your behalf",
+            //        Scopes = new List<string> {"webApi", "ClientApi"},
+            //        ApiSecrets = new List<Secret> {new Secret("ScopeSecret".Sha256())},
+            //        UserClaims = new List<string> {"role"}
+            //    }
+
             };
         }
 
@@ -45,7 +68,9 @@ namespace IdentityServer
             return new[]
             {
                 new ApiScope("webApi", "Read Access to API #1"),
-                //new ApiScope("api1.write", "Write Access to API #1")
+                new ApiScope("ClientApi", "Access to API #2"),
+                //new ApiScope("oidc", "OpenIDConnect"),
+                //new ApiScope("Client_MVC", "Access to MVC_API")
             };
         }
     }
